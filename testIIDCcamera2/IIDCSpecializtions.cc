@@ -31,7 +31,7 @@ MainWindow<IIDCCamera>::createCamera(int n)
 {
     return IIDCCamera(0);
 }
-    
+
 template <> QString
 MainWindow<IIDCCamera>::defaultConfigFile()
 {
@@ -44,7 +44,7 @@ MainWindow<IIDCCamera>::addExtraCmds()
 {
     const auto	button = new QPushButton(tr("Speed"), _central);
     const auto	menu   = new QMenu(button);
-    
+
     for (const auto& speedName : IIDCCamera::speedNames)
     {
 	const auto	name   = speedName.name;
@@ -62,7 +62,9 @@ MainWindow<IIDCCamera>::addExtraCmds()
 		    }
 		    catch (const std::exception& err)
 		    {
-			_errmsg->showMessage(tr(err.what()));
+			QErrorMessage	errMsg;
+			errMsg.showMessage(tr(err.what()));
+			errMsg.exec();
 		    }
 		});
 
@@ -73,7 +75,7 @@ MainWindow<IIDCCamera>::addExtraCmds()
     button->setMenu(menu);
     _layout->addWidget(button, 2, 0, 1, 3);
 }
-    
+
 /************************************************************************
 *  class ImageView							*
 ************************************************************************/
@@ -92,7 +94,7 @@ ImageView::captureAndDisplay(IIDCCamera& camera)
       case IIDCCamera::RAW_8:
 	captureAndDisplay(camera, Tag<uint8_t>());
 	break;
-	
+
       case IIDCCamera::YUV_411:
 	captureAndDisplay(camera, Tag<YUV411>());
 	break;
@@ -107,7 +109,7 @@ ImageView::captureAndDisplay(IIDCCamera& camera)
       case IIDCCamera::RAW_16:
 	captureAndDisplay(camera, Tag<uint16_t>());
 	break;
-	
+
       case IIDCCamera::SIGNED_MONO_16:
 	captureAndDisplay(camera, Tag<int16_t>());
 	break;
@@ -119,7 +121,7 @@ ImageView::captureAndDisplay(IIDCCamera& camera)
       case IIDCCamera::YUV_444:
 	captureAndDisplay(camera, Tag<YUV444>());
 	break;
-	
+
       case IIDCCamera::RGB_24:
 	captureAndDisplay(camera, Tag<RGB>());
 	break;
@@ -183,14 +185,14 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 {
     const auto	button = new QPushButton(this);
     const auto	menu   = new QMenu(button);
-    
+
     for (const auto& formatName : IIDCCamera::formatNames)
     {
 	const auto	name   = formatName.name;
 	const auto	format = formatName.format;
 	const auto	inq    = camera.inquireFrameRate(format);
 	QMenu*		frameRateMenu = nullptr;
-	
+
 	for (const auto& frameRateName : IIDCCamera::frameRateNames)
 	{
 	    const auto	frameRate = frameRateName.frameRate;
@@ -206,7 +208,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 		    formatAction->setMenu(frameRateMenu);
 		    menu->addAction(formatAction);
 		}
-		
+
 		const auto
 		    frameRateAction = new QAction(tr(frameRateName.name),
 						  frameRateMenu);
@@ -234,21 +236,22 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 								bytePerPacket);
 				}
 				camera.setFormatAndFrameRate(format, frameRate);
+
+				button->setText(tr(name));
 			    }
 			    catch (const std::exception& err)
 			    {
-				std::cerr << err.what() << std::endl;
-				return;
+				QErrorMessage	errMsg;
+				errMsg.showMessage(tr(err.what()));
+				errMsg.exec();
 			    }
-
-			    button->setText(tr(name));
 			});
 	    }
 	}
 
 	if (camera.getFormat() == format)
 	    button->setText(tr(name));
-	
+
     }
     button->setMenu(menu);
     _layout->addWidget(button, 0, 1, 1, 1);
@@ -266,6 +269,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	    continue;
 
 	const auto	label = new QLabel(tr(featureName.name), this);
+	label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
 	_layout->addWidget(label, row, 0, 1, 1);
 
 	SliderCmd*	slider  = nullptr;
@@ -328,6 +332,8 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	    _layout->addWidget(slider, row, 1, 1, 1);
 
 	    const auto	label2 = new QLabel(tr("White bal.(V/R)"), this);
+	    label2->setAlignment(Qt::Alignment(Qt::AlignRight |
+					       Qt::AlignVCenter));
 	    _layout->addWidget(label2, row + 1, 0, 1, 1);
 	    slider2 = new SliderCmd(this);
 	    connect(slider2, &SliderCmd::valueChanged,
@@ -425,5 +431,5 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	    ++row;
     }
 }
-    
+
 }	// namespace TU

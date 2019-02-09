@@ -39,7 +39,7 @@ CmdPane::CmdPane(QWidget* parent)
     :QWidget(parent),
      _layout(new QGridLayout(this))
 {
-    _layout->setHorizontalSpacing(2);
+    _layout->setHorizontalSpacing(4);
     _layout->setVerticalSpacing(2);
 }
 
@@ -60,6 +60,6 @@ CmdPane::addCmds(CAMERA& camera)
 
     addFormatAndFeatureCmds(camera);
 }
-    
+
 }	// namespace TU
 #endif	// !TU_CMDPANE_H

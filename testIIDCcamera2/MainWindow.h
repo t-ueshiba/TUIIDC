@@ -29,16 +29,15 @@ class MainWindow : public QMainWindow
     void		up()						;
     void		down()						;
     void		save()					const	;
-    
+
     static CAMERA	createCamera(int n)				;
     static QString	defaultConfigFile()				;
-    
+
   private:
     std::vector<CAMERA>		_cameras;
     QWidget*		const	_central;
     QGridLayout*	const	_layout;
     QListWidget*	const	_list;
-    QErrorMessage*	const	_errmsg;
 };
 
 template <class CAMERA>
@@ -46,8 +45,7 @@ MainWindow<CAMERA>::MainWindow()
     :QMainWindow(),
      _central(new QWidget(this)),
      _layout(new QGridLayout(_central)),
-     _list(new QListWidget(_central)),
-     _errmsg(new QErrorMessage(_central))
+     _list(new QListWidget(_central))
 {
     _layout->setHorizontalSpacing(2);
     _layout->setVerticalSpacing(2);
@@ -128,14 +126,14 @@ MainWindow<CAMERA>::up()
 		    std::swap(*_list->item(i), *_list->item(j));
 		    std::swap(_cameras[i], _cameras[j]);
 		    _list->setCurrentRow(j);
-		    
+
 		    break;
 		}
 
 	    break;
 	}
 }
-    
+
 template <class CAMERA> void
 MainWindow<CAMERA>::down()
 {
@@ -157,32 +155,38 @@ MainWindow<CAMERA>::down()
 	    break;
 	}
 }
-    
+
 template <class CAMERA> void
 MainWindow<CAMERA>::save() const
 {
     if (_cameras.size() == 0)
 	return;
 
-    auto		fileName = QFileDialog::getSaveFileName(
-					_central, tr("Save config."),
-					defaultConfigFile(),
-					tr("camera_name (*.conf)"));
+    const auto	fileName = QFileDialog::getSaveFileName(
+				_central, tr("Save config."),
+				defaultConfigFile(),
+				tr("camera_name (*.conf)"));
+    if (fileName.size() == 0)
+	return;
+
     std::ofstream	out(fileName.toUtf8().data());
     if (!out)
     {
-	_errmsg->showMessage(fileName.prepend("Cannot open "));
+	QErrorMessage	errMsg;
+	errMsg.showMessage("Cannot open " + fileName);
+	errMsg.exec();
+
 	return;
     }
-    
+
     YAML::Emitter	emitter;
     emitter << YAML::BeginSeq;
     for (const auto& camera : _cameras)
 	emitter << camera;
     emitter << YAML::EndSeq;
-    
+
     out << emitter.c_str() << std::endl;
 }
-    
+
 }
 #endif	// !TU_MAINWINDOW_H
