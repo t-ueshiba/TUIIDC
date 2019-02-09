@@ -7,7 +7,7 @@
 #include <QMainWindow>
 #include <QListWidget>
 #include <QFileDialog>
-#include <QErrorMessage>
+#include <QMessageBox>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include "CameraWindow.h"
@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
     void		addExtraCmds()					{}
     void		up()						;
     void		down()						;
-    void		save()					const	;
+    void		save()						;
 
     static CAMERA	createCamera(int n)				;
     static QString	defaultConfigFile()				;
@@ -157,7 +157,7 @@ MainWindow<CAMERA>::down()
 }
 
 template <class CAMERA> void
-MainWindow<CAMERA>::save() const
+MainWindow<CAMERA>::save()
 {
     if (_cameras.size() == 0)
 	return;
@@ -166,16 +166,13 @@ MainWindow<CAMERA>::save() const
 				_central, tr("Save config."),
 				defaultConfigFile(),
 				tr("camera_name (*.conf)"));
-    if (fileName.size() == 0)
+    if (fileName.isEmpty())
 	return;
 
     std::ofstream	out(fileName.toUtf8().data());
     if (!out)
     {
-	QErrorMessage	errMsg;
-	errMsg.showMessage("Cannot open " + fileName);
-	errMsg.exec();
-
+	QMessageBox::critical(this, tr("Error"), "Cannot open " + fileName);
 	return;
     }
 

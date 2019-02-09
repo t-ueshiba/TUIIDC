@@ -62,9 +62,8 @@ MainWindow<IIDCCamera>::addExtraCmds()
 		    }
 		    catch (const std::exception& err)
 		    {
-			QErrorMessage	errMsg;
-			errMsg.showMessage(tr(err.what()));
-			errMsg.exec();
+			QMessageBox::critical(this,
+					      tr("Error"), tr(err.what()));
 		    }
 		});
 
@@ -241,9 +240,8 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 			    }
 			    catch (const std::exception& err)
 			    {
-				QErrorMessage	errMsg;
-				errMsg.showMessage(tr(err.what()));
-				errMsg.exec();
+				QMessageBox::critical(this, tr("Error"),
+						      tr(err.what()));
 			    }
 			});
 	    }

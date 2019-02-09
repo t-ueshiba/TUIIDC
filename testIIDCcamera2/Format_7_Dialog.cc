@@ -20,18 +20,21 @@ Format_7_Dialog::Format_7_Dialog(QWidget* parent,
     :QDialog(parent), _fmt7info(fmt7info)
 {
     int		row = 0;
-    
     auto	layout = new QGridLayout(this);
+    layout->setHorizontalSpacing(4);
+    layout->setVerticalSpacing(2);
 
     auto	label = new QLabel(tr("u0"), this);
-    const auto	u0    = new SliderCmd(this);
+    label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
+    const auto	u0 = new SliderCmd(this);
     u0->setRange(0, _fmt7info.maxWidth, _fmt7info.unitU0);
     u0->setValue(_fmt7info.u0);
     layout->addWidget(label, row, 0, 1, 1);
     layout->addWidget(u0,    row, 1, 1, 1);
     ++row;
-    
+
     label = new QLabel(tr("v0"), this);
+    label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
     const auto	v0 = new SliderCmd(this);
     v0->setRange(0, _fmt7info.maxHeight, _fmt7info.unitV0);
     v0->setValue(_fmt7info.v0);
@@ -40,22 +43,25 @@ Format_7_Dialog::Format_7_Dialog(QWidget* parent,
     ++row;
 
     label = new QLabel(tr("width"), this);
+    label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
     const auto	width = new SliderCmd(this);
     width->setRange(0, _fmt7info.maxWidth, _fmt7info.unitWidth);
     width->setValue(_fmt7info.width);
     layout->addWidget(label, row, 0, 1, 1);
     layout->addWidget(width, row, 1, 1, 1);
     ++row;
-    
+
     label = new QLabel(tr("height"), this);
+    label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
     const auto	height = new SliderCmd(this);
     height->setRange(0, _fmt7info.maxHeight, _fmt7info.unitHeight);
     height->setValue(_fmt7info.height);
     layout->addWidget(label,  row, 0, 1, 1);
     layout->addWidget(height, row, 1, 1, 1);
     ++row;
-    
+
     label = new QLabel(tr("packet size"), this);
+    label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
     const auto	bytePerPacket = new SliderCmd(this);
     bytePerPacket->setRange(_fmt7info.unitBytePerPacket,
 			    _fmt7info.maxBytePerPacket,
@@ -115,7 +121,7 @@ Format_7_Dialog::Format_7_Dialog(QWidget* parent,
     {
 	const auto	pixelFormat = pixelFormatName.pixelFormat;
 	const auto	name	    = pixelFormatName.name;
-	
+
 	if (_fmt7info.availablePixelFormats & pixelFormat)
 	{
 	    const auto	action = new QAction(tr(name), menu);
@@ -139,7 +145,7 @@ Format_7_Dialog::Format_7_Dialog(QWidget* parent,
     const auto	dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok,
 						       Qt::Horizontal, this);
     layout->addWidget(dialogButtonBox, row, 0, 1, 2);
-    
+
     connect(dialogButtonBox, &QDialogButtonBox::accepted,
 	    this, &QDialog::accept);
 
@@ -163,5 +169,5 @@ Format_7_Dialog::getParameters(QWidget* parent,
 
     return dialog._fmt7info.pixelFormat;
 }
-    
+
 }	// namespace TU
