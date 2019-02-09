@@ -53,8 +53,9 @@ CameraWindow<CAMERA>::CameraWindow(QWidget* parent, CAMERA& camera)
      _timerId(0),
      _nframes(0)
 {
+    setWindowTitle(cameraName(_camera));
     setAttribute(Qt::WA_DeleteOnClose);
-    
+
     _cmdPane->addCmds(_camera);
     connect(_cmdPane, &CmdPane::timerSet, this, &CameraWindow::onTimerSet);
 
@@ -66,9 +67,8 @@ CameraWindow<CAMERA>::CameraWindow(QWidget* parent, CAMERA& camera)
     layout->addWidget(_cmdPane);
     setCentralWidget(central);
 
-    setWindowTitle(cameraName(_camera));
-
     _elapsedTimer.start();
+    show();
 }
 
 template <class CAMERA>

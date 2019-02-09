@@ -80,7 +80,6 @@ MainWindow<CAMERA>::MainWindow()
 		connect(cameraWindow, &QObject::destroyed,
 			[item](){ item->setHidden(false); });
 		item->setHidden(true);
-		cameraWindow->show();
 	    });
     _layout->addWidget(_list, 0, 0, 2, 1);
 
