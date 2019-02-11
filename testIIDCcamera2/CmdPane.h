@@ -1,14 +1,16 @@
 /*!
  *   \file	CmdPane.h
  */
-#ifndef TU_CMDPANE_H
-#define TU_CMDPANE_H
+#ifndef TU_QT_CMDPANE_H
+#define TU_QT_CMDPANE_H
 
 #include <QWidget>
 #include <QGridLayout>
 #include <QPushButton>
 
 namespace TU
+{
+namespace qt
 {
 /************************************************************************
 *  class CmdPane							*
@@ -61,5 +63,6 @@ CmdPane::addCmds(CAMERA& camera)
     addFormatAndFeatureCmds(camera);
 }
 
+}	// namespace qt
 }	// namespace TU
-#endif	// !TU_CMDPANE_H
+#endif	// !TU_QT_CMDPANE_H
