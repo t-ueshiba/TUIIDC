@@ -215,7 +215,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 						  frameRateMenu);
 		frameRateMenu->addAction(frameRateAction);
 		connect(frameRateAction, &QAction::triggered,
-			[this, &camera, format, frameRate, button, name]()
+			[&camera, format, frameRate, button, name]()
 			{
 			    try
 			    {
@@ -225,7 +225,6 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 						width, height, bytePerPacket;
 				    const auto	pixelFormat
 					= Format_7_Dialog::getParameters(
-					    this,
 					    camera.getFormat_7_Info(format),
 					    u0, v0, width, height,
 					    bytePerPacket);
@@ -242,7 +241,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 			    }
 			    catch (const std::exception& err)
 			    {
-				QMessageBox::critical(this, tr("Error"),
+				QMessageBox::critical(nullptr, tr("Error"),
 						      tr(err.what()));
 			    }
 			});

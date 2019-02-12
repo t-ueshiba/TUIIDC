@@ -82,7 +82,6 @@ template <class CAMERA>
 CameraWindow<CAMERA>::~CameraWindow()
 {
     onTimerSet(false);
-    _camera.continuousShot(false);
 }
 
 template <class CAMERA> void

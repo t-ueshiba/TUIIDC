@@ -17,10 +17,11 @@ namespace qt
 /************************************************************************
 *  class Format_7_Dialog						*
 ************************************************************************/
-Format_7_Dialog::Format_7_Dialog(QWidget* parent,
-				 const IIDCCamera::Format_7_Info& fmt7info)
-    :QDialog(parent), _fmt7info(fmt7info)
+Format_7_Dialog::Format_7_Dialog(const IIDCCamera::Format_7_Info& fmt7info)
+    :_fmt7info(fmt7info)
 {
+    setWindowTitle(tr("Set Format_7 parameters"));
+    
     int		row = 0;
     auto	layout = new QGridLayout(this);
     layout->setHorizontalSpacing(4);
@@ -155,13 +156,12 @@ Format_7_Dialog::Format_7_Dialog(QWidget* parent,
 }
 
 IIDCCamera::PixelFormat
-Format_7_Dialog::getParameters(QWidget* parent,
-			       const IIDCCamera::Format_7_Info& fmt7info,
+Format_7_Dialog::getParameters(const IIDCCamera::Format_7_Info& fmt7info,
 			       u_int& u0,    u_int& v0,
 			       u_int& width, u_int& height,
 			       u_int& bytePerPacket)
 {
-    Format_7_Dialog	dialog(parent, fmt7info);
+    Format_7_Dialog	dialog(fmt7info);
 
     u0		  = dialog._fmt7info.u0;
     v0		  = dialog._fmt7info.v0;
