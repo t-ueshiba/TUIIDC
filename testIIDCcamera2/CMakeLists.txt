@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.0)
 project(testIIDCcamera2)
 
 enable_language(CXX)
@@ -14,12 +14,11 @@ include_directories(${Qt5Widgets_INCLUDE_DIRS})
 
 file(GLOB sources *.cc)
 
-set(moc_headers CmdPane.h SliderCmd.h)
+set(moc_headers CmdPane.h)
 set(moc_sources "")
 QT5_WRAP_CPP(moc_sources ${moc_headers})
 
 add_executable(${PROJECT_NAME} ${sources} ${moc_sources})
-target_link_libraries(${PROJECT_NAME} TUIIDC++ ${Qt5Widgets_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} TUIIDC++ TUQt++ ${Qt5Widgets_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
-

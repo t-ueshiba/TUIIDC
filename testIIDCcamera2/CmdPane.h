@@ -1,14 +1,16 @@
 /*!
  *   \file	CmdPane.h
  */
-#ifndef TU_CMDPANE_H
-#define TU_CMDPANE_H
+#ifndef TU_QT_CMDPANE_H
+#define TU_QT_CMDPANE_H
 
 #include <QWidget>
 #include <QGridLayout>
 #include <QPushButton>
 
 namespace TU
+{
+namespace qt
 {
 /************************************************************************
 *  class CmdPane							*
@@ -39,7 +41,7 @@ CmdPane::CmdPane(QWidget* parent)
     :QWidget(parent),
      _layout(new QGridLayout(this))
 {
-    _layout->setHorizontalSpacing(2);
+    _layout->setHorizontalSpacing(4);
     _layout->setVerticalSpacing(2);
 }
 
@@ -60,6 +62,7 @@ CmdPane::addCmds(CAMERA& camera)
 
     addFormatAndFeatureCmds(camera);
 }
-    
+
+}	// namespace qt
 }	// namespace TU
-#endif	// !TU_CMDPANE_H
+#endif	// !TU_QT_CMDPANE_H

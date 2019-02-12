@@ -17,9 +17,9 @@ int
 main(int argc, char* argv[])
 {
     using	namespace TU;
-    
+
     QApplication		app(argc, argv);
-    MainWindow<IIDCCamera>	mainWindow;
+    qt::MainWindow<IIDCCamera>	mainWindow;
 
     return app.exec();
 }

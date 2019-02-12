@@ -1,15 +1,15 @@
 /*!
  *   \file	CameraWindow.h
  */
-#ifndef TU_CAMERAWINDOW_H
-#define TU_CAMERAWINDOW_H
+#ifndef TU_QT_CAMERAWINDOW_H
+#define TU_QT_CAMERAWINDOW_H
 
 #include <QMainWindow>
 #include <QStatusBar>
 #include <QTimerEvent>
 #include <QElapsedTimer>
+#include "TU/qt/ImageView.h"
 #include "CmdPane.h"
-#include "ImageView.h"
 
 namespace TU
 {
@@ -19,6 +19,8 @@ namespace TU
 template <class CAMERA> QString
 cameraName(const CAMERA& camera)					;
 
+namespace qt
+{
 /************************************************************************
 *  class CameraWindow<CAMERA>						*
 ************************************************************************/
@@ -32,10 +34,15 @@ class CameraWindow : public QMainWindow
     void	onTimerSet(bool enable)					;
 
   protected:
+    void	captureAndDisplay()					;
+    template <class T>
+    void	captureRawAndDisplay()					;
+    void	captureBayerAndDisplay()				;
     void	timerEvent(QTimerEvent* event)				;
 
   private:
     CAMERA&		_camera;
+    QVector<uchar>	_image;
     ImageView*	const	_imageView;
     CmdPane*	const	_cmdPane;
     int			_timerId;
@@ -48,13 +55,14 @@ template <class CAMERA>
 CameraWindow<CAMERA>::CameraWindow(QWidget* parent, CAMERA& camera)
     :QMainWindow(parent),
      _camera(camera),
-     _imageView(new ImageView(this, _camera.width(), _camera.height())),
+     _imageView(new ImageView(this)),
      _cmdPane(new CmdPane(this)),
      _timerId(0),
      _nframes(0)
 {
+    setWindowTitle(cameraName(_camera));
     setAttribute(Qt::WA_DeleteOnClose);
-    
+
     _cmdPane->addCmds(_camera);
     connect(_cmdPane, &CmdPane::timerSet, this, &CameraWindow::onTimerSet);
 
@@ -66,16 +74,14 @@ CameraWindow<CAMERA>::CameraWindow(QWidget* parent, CAMERA& camera)
     layout->addWidget(_cmdPane);
     setCentralWidget(central);
 
-    setWindowTitle(cameraName(_camera));
-
     _elapsedTimer.start();
+    show();
 }
 
 template <class CAMERA>
 CameraWindow<CAMERA>::~CameraWindow()
 {
     onTimerSet(false);
-    _camera.continuousShot(false);
 }
 
 template <class CAMERA> void
@@ -96,13 +102,31 @@ CameraWindow<CAMERA>::onTimerSet(bool enable)
     }
 }
 
+template <class CAMERA> template <class T> inline void
+CameraWindow<CAMERA>::captureRawAndDisplay()
+{
+    _image.resize(_camera.width() * _camera.height() * sizeof(T));
+    _camera.snap().captureRaw(_image.data());
+    _imageView->display(reinterpret_cast<const T*>(_image.data()),
+			_camera.width(), _camera.height());
+}
+
+template <class CAMERA> inline void
+CameraWindow<CAMERA>::captureBayerAndDisplay()
+{
+    _image.resize(_camera.width() * _camera.height() * sizeof(RGB));
+    _camera.snap().captureBayerRaw(_image.data());
+    _imageView->display(reinterpret_cast<const RGB*>(_image.data()),
+			_camera.width(), _camera.height());
+}
+
 template <class CAMERA> void
 CameraWindow<CAMERA>::timerEvent(QTimerEvent* event)
 {
     if (event->timerId() != _timerId)
 	return;
 
-    _imageView->captureAndDisplay(_camera);
+    captureAndDisplay();
 
     if (_nframes++ == 10)
     {
@@ -114,5 +138,6 @@ CameraWindow<CAMERA>::timerEvent(QTimerEvent* event)
     }
 }
 
-}
-#endif	// !TU_CAMERAWINDOW_H
+}	// namespace qt
+}	// namespace TU
+#endif	// !TU_QT_CAMERAWINDOW_H
