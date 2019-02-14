@@ -133,6 +133,7 @@
 #include <cstdint>	// for uintXX_t
 #include <sys/types.h>	// for u_int
 #include <memory>	// for std::unique_ptr<T>
+#include <mutex>
 #include <list>
 #include <stdexcept>
 #include <sstream>
@@ -243,6 +244,7 @@ class IIDCNode
     quadlet_t		readQuadletFromConfigROM(uint32_t offset) const	;
 
   private:
+    static std::mutex			_nodes_mutex;
     static std::list<const IIDCNode*>	_nodes;
 };
 

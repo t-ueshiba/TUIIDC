@@ -16,6 +16,7 @@ IIDCNode::IIDCNode()
     
 IIDCNode::~IIDCNode()
 {
+    std::lock_guard<std::mutex>	lock(_nodes_mutex);
     _nodes.remove(this);
 }
     
@@ -49,6 +50,7 @@ IIDCNode::commandRegisterBase() const
 bool
 IIDCNode::inList() const
 {
+    std::lock_guard<std::mutex>	lock(_nodes_mutex);
     return std::find_if(_nodes.begin(), _nodes.end(),
 			[=](const IIDCNode* node)
 			{
@@ -60,6 +62,7 @@ IIDCNode::inList() const
 void
 IIDCNode::addToList() const
 {
+    std::lock_guard<std::mutex>	lock(_nodes_mutex);
     _nodes.push_back(this);
 }
     
@@ -123,5 +126,6 @@ IIDCNode::readQuadletFromConfigROM(uint32_t offset) const
     return readQuadlet(CSR_REGISTER_BASE + CSR_CONFIG_ROM + offset);
 }
 
+std::mutex			IIDCNode::_nodes_mutex;
 std::list<const IIDCNode*>	IIDCNode::_nodes;
 }
