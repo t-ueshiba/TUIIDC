@@ -193,7 +193,7 @@ USBNode::waitListenBuffer()
 void
 USBNode::requeueListenBuffer()
 {
-    std::unique_lock<std::mutex>	lock(_mutex);
+    std::lock_guard<std::mutex>	lock(_mutex);
     if (!_ready.empty())
     {
 	const auto	buffer = _ready.front();	// 受信済みqueueの先頭を
@@ -416,7 +416,7 @@ USBNode::Buffer::callback(libusb_transfer* transfer)
 	 << ", autual_lenth = " << transfer->actual_length
 	 << endl;
 #endif
-    std::unique_lock<std::mutex>	lock(buffer->_node->_mutex);
+    std::lock_guard<std::mutex>	lock(buffer->_node->_mutex);
     buffer->_node->_ready.push(buffer);
 }
     
