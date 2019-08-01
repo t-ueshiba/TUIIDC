@@ -2417,7 +2417,7 @@ IIDCCamera::printCycletime(std::ostream& out, uint32_t cycletime)
 //! 指定された出力ストリームにホストのローカルタイムを出力する．
 /*!
  \param	out		出力ストリーム
- \param cycletime	ローカルタイム(microseconds)
+ \param localtime	ローカルタイム(microseconds)
  \return		outに指定した出力ストリーム
 */
 std::ostream&
