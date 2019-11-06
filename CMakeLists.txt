@@ -53,7 +53,6 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 
 add_subdirectory(TU)
 add_subdirectory(testIIDCcamera)
-add_subdirectory(testIIDCcamera2)
 
 option(BUILD_TUIIDCPP_TEST_PROGRAMS "Building test programs for TUIIDC++" OFF)
 
