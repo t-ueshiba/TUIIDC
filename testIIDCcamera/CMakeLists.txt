@@ -19,6 +19,6 @@ set(moc_sources "")
 QT5_WRAP_CPP(moc_sources ${moc_headers})
 
 add_executable(${PROJECT_NAME} ${sources} ${moc_sources})
-target_link_libraries(${PROJECT_NAME} TUIIDC++ TUQt++ ${Qt5Widgets_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} TUIIDC TUQt ${Qt5Widgets_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

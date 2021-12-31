@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(TUIIDC++)
+project(TUIIDC)
 
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -39,13 +39,13 @@ add_library(${PROJECT_NAME} SHARED ${sources})
 if(APPLE)
     add_subdirectory(MacOSX)
     include_directories(MacOSX)
-    target_link_libraries(${PROJECT_NAME} TUTools++ raw1394
+    target_link_libraries(${PROJECT_NAME} TUTools raw1394
 			  ${LIBUSB-1.0_LIBRARIES} ${YAML-CPP_LIBRARIES})
 else()
     pkg_check_modules(LIBRAW1394 REQUIRED libraw1394)
     include_directories(${LIBRAW1394_INCLUDE_DIRS})
     target_link_libraries(${PROJECT_NAME}
-			  TUTools++ ${LIBRAW1394_LIBRARIES}
+			  TUTools ${LIBRAW1394_LIBRARIES}
 			  ${LIBUSB-1.0_LIBRARIES} ${YAML-CPP_LIBRARIES})
 endif()
 
@@ -54,7 +54,7 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 add_subdirectory(TU)
 add_subdirectory(testIIDCcamera)
 
-option(BUILD_TUIIDCPP_TEST_PROGRAMS "Building test programs for TUIIDC++" OFF)
+option(BUILD_TUIIDCPP_TEST_PROGRAMS "Building test programs for TUIIDC" OFF)
 
 if(BUILD_TUIIDCPP_TEST_PROGRAMS)
   add_subdirectory(testcam)
