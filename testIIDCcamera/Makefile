@@ -26,7 +26,7 @@ else
 endif
 CCFLAGS		= $(CFLAGS)
 
-LIBS		= -lTUQt++ -lTUIIDC++ -lTUTools++ -lyaml-cpp \
+LIBS		= -lTUQt -lTUIIDC -lTUTools -lyaml-cpp \
 		  $(shell pkg-config --libs Qt5Widgets)
 LINKER		= $(CXX)
 

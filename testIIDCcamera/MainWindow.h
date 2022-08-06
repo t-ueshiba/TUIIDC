@@ -350,9 +350,13 @@ MainWindow<CAMERA>::MainWindow()
 					       cameraName(_cameras.back()),
 					       _list));
 	}
+	catch (const std::range_error& err)
+	{
+	    break;	// カメラが見つからなくなったら脱出
+	}
 	catch (const std::exception& err)
 	{
-	    break;
+	    std::cerr << err.what() << std::endl;
 	}
     }
 

@@ -12,15 +12,15 @@ namespace TU
 ************************************************************************/
 //! FireWireノードオブジェクトを生成する
 /*!
+  \param unit_spec_ID	このノードの種類を示すID(ex. FireWireデジタルカメラ
+			であれば, 0x00a02d)
   \param uniqId		個々の機器固有の64bit ID. 同一のFireWire busに
 			同一のunit_spec_IDを持つ複数の機器が接続されて
-			いる場合, これによって同定を行う. 
+			いる場合, これによって同定を行う.
 			0が与えられると, 指定されたunit_spec_IDを持ち
 			まだ#FireWireNodeオブジェクトを割り当てられて
 			いない機器のうち, 一番最初にみつかったものがこの
-			オブジェクトと結びつけられる. 
-  \param unit_spec_ID	このノードの種類を示すID(ex. FireWireデジタルカメラ
-			であれば, 0x00a02d)
+			オブジェクトと結びつけられる.
 */
 FireWireNode::FireWireNode(u_int unit_spec_ID, uint64_t uniqId)
 #if defined(__APPLE__)
@@ -46,14 +46,14 @@ FireWireNode::FireWireNode(u_int unit_spec_ID, uint64_t uniqId)
 	    raw1394_destroy_handle(_handle);
 	    _handle = nullptr;
 	}
-	throw err;
+	throw std::range_error(err.what());
     }
 #endif	// !__APPLE__
     raw1394_set_userdata(_handle, this);
 
     addToList();	// コンストラクタが成功したので、ノードリストに登録
 }
-	     
+
 //! FireWireノードオブジェクトを破壊する
 FireWireNode::~FireWireNode()
 {
@@ -69,7 +69,7 @@ FireWireNode::nodeId() const
 {
     return _nodeId;
 }
-    
+
 IIDCNode::quadlet_t
 FireWireNode::readQuadlet(nodeaddr_t addr) const
 {
@@ -182,10 +182,10 @@ FireWireNode::getCycletime(clock_t::time_point& tm) const
     uint64_t	localtime;
     raw1394_read_cycle_timer(_handle, &cycletime, &localtime);
     tm = clock_t::time_point() + std::chrono::microseconds(localtime);
-    
+
     return cycletime;
 }
-    
+
 //! isochronous受信用バッファにパケットデータを転送する
 /*!
   本ハンドラは，パケットが1つ受信されるたびに呼び出される．また，mapListenBuffer()
@@ -205,7 +205,7 @@ FireWireNode::receive(raw1394handle_t handle,
     const auto	node = static_cast<FireWireNode*>(
 			   raw1394_get_userdata(handle));
     auto&	buffer = node->_ready.back();	// 現在受信中のバッファ
-    
+
     if (sy)					// 新しいフレームが来たら...
 	buffer.clear();				// これまでの内容を捨てる
 
@@ -215,14 +215,14 @@ FireWireNode::receive(raw1394handle_t handle,
 
     return RAW1394_ISO_OK;
 }
-    
+
 void
 FireWireNode::check(bool err, const std::string& msg)
 {
     if (err)
 	throw std::runtime_error(msg + ' ' + strerror(errno));
 }
-    
+
 #if !defined(__APPLE__)
 u_char
 FireWireNode::setHandle(uint32_t unit_spec_ID, uint64_t uniqId)
@@ -232,7 +232,7 @@ FireWireNode::setHandle(uint32_t unit_spec_ID, uint64_t uniqId)
     check(nports < 0, "FireWireNode::FireWireNode: failed to get port info!!");
     raw1394_destroy_handle(_handle);
     _handle = nullptr;
-    
+
   // Find the specified node yet registered.
     for (int i = 0; i < nports; ++i)		// for each port...
     {
@@ -290,7 +290,7 @@ FireWireNode::Buffer::map(FireWireNode* node, u_int size)
     _data.resize(size);
     _ndata = 0;
 }
-    
+
 bool
 FireWireNode::Buffer::receive(u_char* data, u_int len)
 {
@@ -309,5 +309,5 @@ FireWireNode::Buffer::receive(u_char* data, u_int len)
 	return true;
     }
 }
-    
+
 }
