@@ -30,7 +30,11 @@ include_directories(
     ${YAML-CPP_INCLUDE_DIRS}
 )
 
-link_directories(${CMAKE_INSTALL_PREFIX}/lib)
+link_directories(
+    ${CMAKE_INSTALL_PREFIX}/lib
+    ${LIBUSB-1.0_LIBRARY_DIRS}
+    ${YAML-CPP_LIBRARY_DIRS}
+)
 
 file(GLOB sources *.cc)
 add_library(${PROJECT_NAME} SHARED ${sources})
@@ -38,7 +42,8 @@ add_library(${PROJECT_NAME} SHARED ${sources})
 if(APPLE)
     add_subdirectory(MacOSX)
     include_directories(MacOSX)
-    target_link_libraries(${PROJECT_NAME} TUTools raw1394
+    target_link_libraries(${PROJECT_NAME}
+			  TUTools raw1394
 			  ${LIBUSB-1.0_LIBRARIES} ${YAML-CPP_LIBRARIES})
 else()
     pkg_check_modules(LIBRAW1394 REQUIRED libraw1394)
