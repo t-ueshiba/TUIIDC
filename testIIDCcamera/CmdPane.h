@@ -4,7 +4,7 @@
 #ifndef TU_QT_CMDPANE_H
 #define TU_QT_CMDPANE_H
 
-#include <QWidget>
+#include <QScrollArea>
 #include <QGridLayout>
 #include <QPushButton>
 
@@ -15,7 +15,7 @@ namespace qt
 /************************************************************************
 *  class CmdPane							*
 ************************************************************************/
-class CmdPane : public QWidget
+class CmdPane : public QScrollArea
 {
     Q_OBJECT
 
@@ -24,7 +24,7 @@ class CmdPane : public QWidget
 
     template <class CAMERA>
     void	addCmds(CAMERA& camera)					;
-
+    
   Q_SIGNALS:
     void	timerSet(bool enable)					;
 
@@ -33,36 +33,41 @@ class CmdPane : public QWidget
     void	addFormatAndFeatureCmds(CAMERA& camera)			;
 
   private:
+    QWidget*	 const	_pane;
     QGridLayout* const	_layout;
 };
 
 inline
 CmdPane::CmdPane(QWidget* parent)
-    :QWidget(parent),
-     _layout(new QGridLayout(this))
+    :QScrollArea(parent),
+     _pane(new QWidget(this)),
+     _layout(new QGridLayout(_pane))
 {
     _layout->setHorizontalSpacing(4);
     _layout->setVerticalSpacing(2);
+    _layout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 template <class CAMERA> void
 CmdPane::addCmds(CAMERA& camera)
 {
   // カメラからの画像取り込みをon/offするtoggle buttonを生成．
-    const auto	toggle = new QPushButton(tr("Capture"), this);
+    const auto	toggle = new QPushButton(tr("Capture"), _pane);
     toggle->setCheckable(true);
-    connect(toggle, &QPushButton::toggled,
-	    [&camera, this](bool enable)
-	    {
-		camera.continuousShot(enable);
-		this->timerSet(enable);
-	    });
+    _pane->connect(toggle, &QPushButton::toggled,
+		   [&camera, this](bool enable)
+		   {
+		       camera.continuousShot(enable);
+		       this->timerSet(enable);
+		   });
     toggle->setChecked(camera.inContinuousShot());
     _layout->addWidget(toggle, 0, 0, 1, 1);
 
     addFormatAndFeatureCmds(camera);
-}
 
+    setWidget(_pane);
+}
+    
 }	// namespace qt
 }	// namespace TU
 #endif	// !TU_QT_CMDPANE_H

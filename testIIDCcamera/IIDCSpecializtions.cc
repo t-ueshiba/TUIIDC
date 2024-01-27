@@ -184,7 +184,7 @@ resetSliders(const IIDCCamera& camera, IIDCCamera::Feature feature,
 template <> void
 CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 {
-    const auto	button = new QPushButton(this);
+    const auto	button = new QPushButton(_pane);
     const auto	menu   = new QMenu(button);
 
     for (const auto& formatName : IIDCCamera::formatNames)
@@ -267,7 +267,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	      (inq & IIDCCamera::ReadOut)))
 	    continue;
 
-	const auto	label = new QLabel(tr(featureName.name), this);
+	const auto	label = new QLabel(tr(featureName.name), _pane);
 	label->setAlignment(Qt::Alignment(Qt::AlignRight | Qt::AlignVCenter));
 	_layout->addWidget(label, row, 0, 1, 1);
 
@@ -279,7 +279,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	  case IIDCCamera::TRIGGER_MODE:
 	  {
 	  // カメラのtrigger modeをon/offするtoggle buttonを生成．
-	    const auto	button = new QPushButton(this);
+	    const auto	button = new QPushButton(_pane);
 	    const auto	menu   = new QMenu(button);
 
 	    for (const auto& triggerModeName : IIDCCamera::triggerModeNames)
@@ -311,7 +311,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 
 	  case IIDCCamera::WHITE_BALANCE:
 	  {
-	    slider = new Slider(this);
+	    slider = new Slider(_pane);
 	    connect(slider, &Slider::valueChanged,
 		    [&camera, feature](double val)
 		    {
@@ -330,11 +330,11 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 		    });
 	    _layout->addWidget(slider, row, 1, 1, 1);
 
-	    const auto	label2 = new QLabel(tr("White bal.(V/R)"), this);
+	    const auto	label2 = new QLabel(tr("White bal.(V/R)"), _pane);
 	    label2->setAlignment(Qt::Alignment(Qt::AlignRight |
 					       Qt::AlignVCenter));
 	    _layout->addWidget(label2, row + 1, 0, 1, 1);
-	    slider2 = new Slider(this);
+	    slider2 = new Slider(_pane);
 	    connect(slider2, &Slider::valueChanged,
 		    [&camera, feature](double val)
 		    {
@@ -357,7 +357,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	    break;
 
 	  default:
-	    slider = new Slider(this);
+	    slider = new Slider(_pane);
 	    connect(slider, &Slider::valueChanged,
 		    [&camera, feature](double val)
 		    {
@@ -373,7 +373,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 
 	if (inq & IIDCCamera::OnOff)		// on/off操作が可能？
 	{
-	    const auto	toggle = new QPushButton(tr("On"), this);
+	    const auto	toggle = new QPushButton(tr("On"), _pane);
 	    toggle->setCheckable(true);
 	    connect(toggle, &QPushButton::toggled,
 		    [&camera, feature](bool enable)
@@ -387,7 +387,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	{
 	    if (feature == IIDCCamera::TRIGGER_MODE)
 	    {
-		const auto	toggle = new QPushButton(tr("(+)"), this);
+		const auto	toggle = new QPushButton(tr("(+)"), _pane);
 		toggle->setCheckable(true);
 		connect(toggle, &QPushButton::toggled,
 			[&camera](bool highActive)
@@ -398,7 +398,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 	    }
 	    else
 	    {
-		const auto	toggle = new QPushButton(tr("Auto"), this);
+		const auto	toggle = new QPushButton(tr("Auto"), _pane);
 		toggle->setCheckable(true);
 		connect(toggle, &QPushButton::toggled,
 			[&camera, feature](bool enable)
@@ -411,7 +411,7 @@ CmdPane::addFormatAndFeatureCmds(IIDCCamera& camera)
 
 	if (inq & IIDCCamera::Abs_Control)	// 絶対値での操作が可能？
 	{
-	    const auto	toggle = new QPushButton(tr("Abs"), this);
+	    const auto	toggle = new QPushButton(tr("Abs"), _pane);
 	    toggle->setCheckable(true);
 	    connect(toggle, &QPushButton::toggled,
 		    [&camera, feature, slider, slider2](bool enable)

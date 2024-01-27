@@ -73,7 +73,7 @@ CameraWindow<CAMERA>::CameraWindow(QWidget* parent, CAMERA& camera)
     layout->addWidget(_imageView);
     layout->addWidget(_cmdPane);
     setCentralWidget(central);
-
+    
     _elapsedTimer.start();
     show();
 }
